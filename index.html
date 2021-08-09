@@ -6,7 +6,28 @@
   <script src="dist/app.js"></script>
 </head>
 
+<style>
+  .flex-row {
+    display: flex;
+    flex-direction: row;
+  }
+
+  .flex-end {
+    display: flex;
+    align-items: flex-end;
+  }
+
+  .display-none {
+    display: none;
+  }
+
+  .display {
+    display: block;
+  }
+</style>
+
 <body>
+  <div id="tabs" class="flex-row flex-end" style="height: 75px; width: 100%;" onclick="addTab()"></div>
   <div id="game"></div>
 </body>
 

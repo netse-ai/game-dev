@@ -4,6 +4,11 @@ import { FirebaseManager } from "./FirebaseManager";
 
 import "firebase"
 
+export interface GameSceneProps {
+  id: string;
+  firebaseManager: FirebaseManager;
+}
+
 interface TileMatrixTile {
   currentTile: number;
   x: number;
@@ -15,10 +20,12 @@ interface TileMatrix {
 }
 
 export class GameScene extends Phaser.Scene {
-  constructor() {
+  constructor(gameSceneProps?: GameSceneProps) {
     super({
-      key: "GameScene"
+      key: gameSceneProps.id
     });
+    this.id = gameSceneProps.id;
+    this.firebaseManager = gameSceneProps.firebaseManager
   }
 
   init(params): void {
@@ -28,27 +35,16 @@ export class GameScene extends Phaser.Scene {
     this.map = this.add.tilemap();
     this.graphics = new Phaser.GameObjects.Graphics(this)
     this._configureInputs()
-    this.firebaseManager.readDB("test", this._readDB)
+    this.firebaseManager.readDB(this.id, this._readDB)
   }
 
+  id: string;
   camera: Phaser.Cameras.Scene2D.Camera = null;
   map: Phaser.Tilemaps.Tilemap = null;
   graphics: Phaser.GameObjects.Graphics = null;
   math: Math = null;
   currentTile: number = 0;
-  firebaseManager: FirebaseManager = new FirebaseManager({
-    firebaseConfig: {
-      apiKey: "AIzaSyDkFrHCxx8FQvT9zuFvVfgWqYh-xL6QP0Q",
-      authDomain: "game-f405d.firebaseapp.com",
-      databaseURL: "https://game-f405d-default-rtdb.firebaseio.com",
-      projectId: "game-f405d",
-      storageBucket: "game-f405d.appspot.com",
-      messagingSenderId: "461478522315",
-      appId: "1:461478522315:web:a68eb48c7c16a99d535a4e",
-      measurementId: "G-N4F7GY6VY3"
-    }
-  })
-
+  firebaseManager: FirebaseManager = null;
   database: firebase.default.database.Database = null;
   dbPayload: any = null
 
@@ -65,7 +61,7 @@ export class GameScene extends Phaser.Scene {
     const tsName = 'ground_1x1'
     this.map.addTilesetImage(tsName);
     //create a blank tilemap layer
-    this.map.createBlankLayer('tm-1', tsName, 32, 32, 60, 60)
+    this.map.createBlankLayer(this.id, tsName, 32, 32, 60, 60)
     this._createTileSelector(tsName)
   }
 
@@ -102,7 +98,7 @@ export class GameScene extends Phaser.Scene {
           y: tileY,
         }
         this.tileArr.tilemap[tileX][tileY] = tile;
-        this.firebaseManager.writeToDB("test", "set", this.tileArr)
+        this.firebaseManager.writeToDB(this.id, "set", this.tileArr)
       }
     }
   }
@@ -128,6 +124,7 @@ export class GameScene extends Phaser.Scene {
 
   private _readDB = (payload: any) => {
     if (payload) {
+      console.log(this.id, payload)
       this.tileArr.tilemap = payload.payload.tilemap
       this.tileArr.tilemap.forEach((tileMatrix: TileMatrixTile[]) => {
         tileMatrix.forEach((tile: TileMatrixTile) => {
@@ -136,7 +133,7 @@ export class GameScene extends Phaser.Scene {
       })
     } else {
       this._createTileArr()
-      this.firebaseManager.writeToDB("test", "set", this.tileArr)
+      this.firebaseManager.writeToDB(this.id, "set", this.tileArr)
     }
   }
 
