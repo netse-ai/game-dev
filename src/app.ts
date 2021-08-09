@@ -1,5 +1,6 @@
 import "phaser";
 import { GameScene } from "./GameScene";
+import { TabsManager, TabsManagerProps } from "./TabsManager";
 const config = {
   title: "MapEditor",
   width: 800,
@@ -11,9 +12,14 @@ export class MapEditor extends Phaser.Game {
   constructor(config: any) {
     super(config);
   }
+  tabsManager: TabsManager = null;
 }
 window.onload = () => {
-  var game = new MapEditor(config);
-  game.scene.add('GameScene', GameScene)
-  game.scene.start('GameScene')
+  const mapEditor = new MapEditor(config);
+  const tmInterface: TabsManagerProps = {
+    mapEditor: mapEditor
+  }
+  const tabs = new TabsManager(tmInterface);
+  mapEditor.scene.add('GameScene', GameScene)
+  mapEditor.scene.start('GameScene')
 };
