@@ -16,7 +16,7 @@ const mapEditorConfig: MapEditorProps = {
   title: "MapEditor",
   width: 800,
   height: 600,
-  parent: "game",
+  parent: "context-0",
   backgroundColor: "#DEDEDE"
 };
 
