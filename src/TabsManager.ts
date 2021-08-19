@@ -72,8 +72,6 @@ export class TabsManager {
     const modal = new Modal(".modal")
     modal.show()
 
-
-
     const tab: HTMLButtonElement = evt.target as HTMLButtonElement;
     const tokens: string[] = tab.id.split("-")
     const id: number = Number(tokens[tokens.length - 1])
@@ -91,6 +89,7 @@ export class TabsManager {
     // const ctx: HTMLElement = document.getElementById("ctx");
     // const game: HTMLElement = document.getElementById("game");
     // game.classList.add("display-none")
+
   }
 
 
